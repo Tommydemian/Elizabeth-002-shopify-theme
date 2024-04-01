@@ -1,0 +1,112 @@
+{% for image in product.images %}
+  <div class="laft-side">
+    <img
+      src="{{ image | image_url: width: 300, height: 500 }}"
+      alt="{{ product.title }}"
+      width="300"
+      height="500" />
+  </div>
+{% endfor %}
+
+<div class="right-side">
+  <h1>{{ product.title | escape }}</h1>
+  <div class="product-prices">
+    <p class="product-prices__compare-price">{{ product.selected_or_first_available_variant.compare_at_price | money_with_currency }}</p>
+    <p class="product-prices__current-price">{{ product.selected_or_first_available_variant.price | money_with_currency }}</p>
+  </div>
+
+  <div>
+    <p>{{ product.description | escape }}</p>
+  </div>
+
+  <form action="{{ routes.cart_url }}" method="post">
+    <input
+      type="hidden"
+      id="product-id"
+      name="id"
+      value="{{ product.selected_or_first_available_variant.id }}" />
+
+    {% if product.variants.size > 1 %}
+      <div class="product-option">
+        {% for option in product.options_with_values %}
+          <fieldset>
+            <legend>{{ option.name | escape }}</legend>
+            {% for value in option.values %}
+              <input
+                type="radio"
+                name="{{ option.name | escape}}"
+                value="{{ value | escape }}"
+                id="{{ option | escape }}-{{ value | escape }}"
+                {% if forloop.first %}
+                checked{% endif %}>
+
+              <label for="{{ option | escape }}-{{ value | escape }}">
+                {{ value }}
+              </label>
+            {% endfor %}
+          </fieldset>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div>
+      <label for="quantity">Quantity</label>
+      <input
+        id="quantity"
+        name="quantity"
+        value="1"
+        class="product-quanity" />
+    </div>
+
+    <button class="pay-button" type="submit">Add to Cart</button>
+  </form>
+</div>
+
+<style></style>
+
+<script>
+  var product = {{ product | json }};
+
+  document.querySelectorAll('.product-option input[type="radio"]').forEach((radio) => {
+    radio.addEventListener('change', () => {
+        // Find selected options
+        var selectedOptions = [];
+
+        document.querySelectorAll('.product-option input[type="radio"]:checked').forEach((radio) => {
+            selectedOptions.push(radio.value);
+        });
+
+        // Assuming product.variants and variant.options are arrays
+        //product.varians => [{id: "val", option1: "val", option2: "val"}]
+        var matchedVariant = product.variants.find(variant => {
+            return variant.options.every(option => selectedOptions.includes(option));
+        });
+
+        if (matchedVariant) {
+            document.querySelector('#product-id').value = matchedVariant.id
+
+            // change URL
+            var url = new URLParse(window.location.href, true); // 2cond argument: true => parse everything
+            // add a ?variant=matchedVariant.id
+            url.query.variant = matchedVariant.id
+            // changing url without addind query values
+            window.history.replaceState(null, null, url.toString())
+
+            // Change prices
+            document.querySelector('.product-prices__current-price').textContent = matchedVariant.price;
+
+          }
+    });
+  });
+
+
+</script>
+
+{% schema %}
+  {
+    "name": "Product",
+    "tag": "section",
+    "class": "product-section",
+    "settings": []
+  }
+{% endschema %}

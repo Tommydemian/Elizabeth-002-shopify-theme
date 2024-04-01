@@ -1,0 +1,37 @@
+{% comment %}
+  make sure this approach (default collection) really adds value tho.
+{% endcomment %}
+{% assign default_collection_handle = 'glasses' %}
+{% assign selected_collection_handle = section.settings.selected_collection | default: default_collection_handle %}
+
+<h2>Collection: {{ collections[selected_collection_handle].title }}</h2>
+
+<section class="collection-wrapper">
+  {% for product in collections[selected_collection_handle].products %}
+    {% render 'product-item'
+      , product: product %}
+  {% endfor %}
+</section>
+
+<style>
+  .collection-wrapper {
+    display: grid;
+    grid-auto-flow: column;
+  }
+
+</style>
+
+{% schema %}
+  {
+    "name": "Collection",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "selected_collection",
+        "label": "Select a Collection",
+        "info": "Recommended: Glasses (select from the dropdown)"
+      }
+    ]
+  }
+{% endschema %}

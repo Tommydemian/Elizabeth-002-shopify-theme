@@ -8,13 +8,22 @@
     <link rel="canonical" href="{{ canonical_url }}">
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
     {{ content_for_header }}
+    <style>
+      {{ settings.body_font |  font_face }}
+      :root {
+        --bodyFont: {{settings.body_font.family}}
+      }
+    </style>
     <!-- Header hook for plugins -->
     {{ 'application.css' | asset_url | stylesheet_tag }}
-    {{ 'application.js' | asset_url | script_tag }}
+    <script src="{{ 'application.js' | asset_url }}" defer></script>
   </head>
   <body>
-    <main role="main">
+    {% section 'header' %}
+    {% section 'announcement-bar' %}
+    <main id="main" role="main">
       {{ content_for_layout }}
     </main>
-  </body>
+    <script defer src="https://cdn.jsdelivr.net/npm/url-parse@1.5.10/dist/url-parse.min.js"></script>
+    </body>
 </html>

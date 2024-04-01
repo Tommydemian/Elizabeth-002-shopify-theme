@@ -1,0 +1,137 @@
+{% comment %}
+  if {{ shop.customer }}
+{% endcomment %}
+
+{% if section.settings["show-announcement"] %}
+  <section class="announce-bar">
+    <div class="announce-bar-left-section">
+      {% if section.settings.image1 != blank %}
+        <img
+          src="{{ section.settings.image1 | image_url: width: 40, height: 40 }}"
+          alt="{{section.settings.image1.alt |  default: "Banner Image"}}"
+          width="40"
+          loading="lazy"
+          height="40" />
+      {% else %}
+        <img
+          src="{{ 'a.png' | asset_url }}"
+          alt="Jordan Logo"
+          width="40"
+          loading="lazy"
+          height="40" />
+      {% endif %}
+      {% if section.settings.image2 != blank %}
+        <img
+          src="{{ section.settings.image1 | image_url: width: 40, height: 40 }}"
+          alt="{{section.settings.image1.alt |  default: "Banner Image"}}"
+          width="40"
+          loading="lazy"
+          height="40" />
+      {% else %}
+        <img
+          src="{{ 'b.png' | asset_url }}"
+          alt="Converse Logo"
+          width="40"
+          loading="lazy"
+          height="40" />
+      {% endif %}
+    </div>
+    <div class="announce-bar-right-section">
+      <ul class="announce-bar-inner-list">
+        {% if section.blocks.size == 0 %}
+          <li>
+            <a href="#">Help</a>
+          </li>
+          {% if shop.customer_accounts_enabled %}
+            <li>
+              <a href={{routes.account_login_url}}>Login</a>
+            </li>
+            <li>
+              <a href="{{routes.account_register_url}}">Register</a>
+            </li>
+          {% endif %}
+          <li>
+            <a href="{{routes.account_url}}">Account</a>
+          </li>
+        {% else %}
+          {% for block in section.blocks %}
+            <li>
+              <a href={{block.settings.link}}>{{ block.settings.text }}</a>
+            </li>
+          {% endfor %}
+          <li>
+            <a href=""></a>
+          </li>
+        {% endif %}
+      </ul>
+
+    </div>
+  </section>
+{% endif %}
+
+<style>
+  .announce-bar {
+    background: {{ section.settings.background }};
+    color: {{ section.settings.color }}
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Announcement Bar",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show-announcement",
+        "label": "Show Announcement Bar",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "image1",
+        "label": "Pick an image",
+        "info": "png is the recommended image format"
+      },
+      {
+        "type": "image_picker",
+        "id": "image2",
+        "label": "Pick an image",
+        "info": "png is the recommended image format"
+      },
+      {
+        "type": "color",
+        "id": "background",
+        "label": "Background",
+        "default": "#fff"
+      }, {
+        "type": "color",
+        "id": "text-color",
+        "label": "Text Color",
+        "default": "#000"
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Links",
+        "type": "links",
+        "limit": 4,
+        "settings": [
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Text",
+            "default": "Link"
+          }, {
+            "type": "url",
+            "id": "link",
+            "label": "Link",
+            "default": "/"
+          }
+
+        ]
+
+      }
+    ]
+  }
+{% endschema %}

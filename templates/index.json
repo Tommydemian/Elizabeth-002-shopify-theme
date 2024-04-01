@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "banner": {
+      "type": "banner",
+      "settings": {}
+    },
+    "inspiration-collage": {
+      "type": "inspiration-collage",
+      "settings": {}
+    },
+    "collection": {
+      "type": "collection",
+      "settings": {}
+    }
+  },
+  "order": ["banner", "inspiration-collage", "collection"]
+}

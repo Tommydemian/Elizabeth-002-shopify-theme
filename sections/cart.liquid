@@ -1,0 +1,56 @@
+<h1>{{ section.settings.section_heading }}</h1>
+
+{% if cart.empty? %}
+  <p>Hey, your cart is empty!</p>
+{% else %}
+  {% form 'cart'
+    , cart %}
+
+    {% for item in cart.items %}
+      <div>
+        <img
+          src="{{ item.image |  image_url: width: 200, height: 400 }}"
+          alt="{{ item.title }}"
+          width="200"
+          height="400" />
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.final_line_price | money_with_currency }}</p>
+        <input name="updates[]" value="{{ item.quantity }}" />
+        <a href="{{ item.url_to_remove }}">Remove</a>
+      </div>
+    {% endfor %}
+
+    <hr>
+
+    <p>Total: {{ cart.total_price | money_with_currency }}
+    </p>
+
+    <button
+      class="pay-button"
+      type="submit"
+      name="update">Update</button>
+
+    <button
+      class="pay-button"
+      type="submit"
+      name="checkout">Checkout</button>
+
+  {% endform %}
+
+
+{% endif %}
+
+
+{% schema %}
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "text",
+        "id": "section_heading",
+        "default": "Cart",
+        "label": "Heading Text"
+      }
+    ]
+  }
+{% endschema %}
